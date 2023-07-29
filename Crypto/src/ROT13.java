@@ -1,3 +1,6 @@
+import java.io.*;
+import java.io.FileReader;
+
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static java.lang.Character.toLowerCase;
@@ -56,7 +59,7 @@ public class ROT13  {
     }
 
     public String decrypt(String text) {
-        return encrypt(text);
+        return crypt(text);
     }
 
     public static String rotate(String s, Character c) {
@@ -73,5 +76,60 @@ public class ROT13  {
 
         return string.toString();
     }
+
+
+    public void encryptSonnetFile(){
+        String[] sonnet = new String[14];
+        try (BufferedReader theFileReader = new BufferedReader(new FileReader("sonnet18.txt"))) {
+            String line;
+            for (int i = 0; i < sonnet.length; i++){
+                line = theFileReader.readLine();
+                sonnet[i] = line;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < sonnet.length; i++){
+            sonnet[i] = encrypt(sonnet[i]);
+        }
+
+        try {
+            FileWriter encryptedSonnet = new FileWriter("sonnet18.enc");
+            for (String line : sonnet){
+                encryptedSonnet.write(line + "\n");
+            }
+            encryptedSonnet.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public String decryptEncryptedSonnetFile(){
+        String[] sonnet = new String[14];
+        try (BufferedReader theFileReader = new BufferedReader(new FileReader("sonnet18.enc"))) {
+            String line;
+            for (int i = 0; i < sonnet.length; i++){
+                line = theFileReader.readLine();
+                sonnet[i] = line;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < sonnet.length; i++){
+            sonnet[i] = decrypt(sonnet[i]);
+        }
+
+        StringBuilder decryptedSonnet = new StringBuilder();
+        for (String line : sonnet){
+            decryptedSonnet.append(line + "\n");
+        }
+
+        return decryptedSonnet.toString();
+    }
+
+
 
 }
